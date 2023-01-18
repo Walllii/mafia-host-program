@@ -4,7 +4,6 @@ from tkinter import *
 from datetime import datetime
 import math
 
-
 root = Tk()
 root.title('Mafia Host')
 root.resizable(width=False, height=False)
@@ -119,9 +118,7 @@ player_buttons = [Players_Button(i + 1) for i in range(10)]
 
 # ===============================================
 
-
 counter = 0
-
 
 class Label_foll:
 
@@ -130,13 +127,15 @@ class Label_foll:
         self = Label(
             root,
             font=('Impact Light', 23,),
-            text='0',
+            text=f'{counter}',
             width=1,
             height=1,
             anchor=CENTER,
             bg='#1f3f3f',
             fg='white'
         )
+
+        self.configure()
 
         if y <= 5:
             self.grid(
@@ -155,7 +154,7 @@ class Buttons_foll:
 
     def __init__(self, y, sign):
         self.sign = sign
-        self.y = Button(root, text=f"{y} {sign}", width=1, foreground='blue', command=Buttons_foll.add_foll(self))
+        self.y = Button(root, text=f"{y} {sign}", width=1, foreground='blue')
         if self.sign == '+':
             if y % 2 == 1:
                 self.y.grid(row=4, column=(y // 2), ipadx=3, sticky='w')
@@ -167,35 +166,13 @@ class Buttons_foll:
             else:
                 self.y.grid(row=5, column=(y // 2) - 1, ipadx=3, sticky='e')
 
-    def add_foll(self):
-        labels_folls[0].congigure(text='6')
 
-
-
-
-foll1 = Buttons_foll(1, '+')
-foll_1 = Buttons_foll(1, '-')
-foll2 = Buttons_foll(2, '+')
-foll_2 = Buttons_foll(2, '-')
-foll3 = Buttons_foll(3, '+')
-foll_3 = Buttons_foll(3, '-')
-foll4 = Buttons_foll(4, '+')
-foll_4 = Buttons_foll(4, '-')
-foll5 = Buttons_foll(5, '+')
-foll_5 = Buttons_foll(5, '-')
-foll6 = Buttons_foll(6, '+')
-foll_6 = Buttons_foll(6, '-')
-foll7 = Buttons_foll(7, '+')
-foll_7 = Buttons_foll(7, '-')
-foll8 = Buttons_foll(8, '+')
-foll_8 = Buttons_foll(8, '-')
-foll9 = Buttons_foll(9, '+')
-foll_9 = Buttons_foll(9, '-')
-foll10 = Buttons_foll(10, '+')
-foll_10 = Buttons_foll(10, '-')
+folls_add = [Buttons_foll(i + 1, "+") for i in range(10)]
+folls_remove = [Buttons_foll(i + 1, "-") for i in range(10)]
 
 
 # ===============================================
+
 
 def delete_text():
     enter.delete(0, 'end')
