@@ -1,8 +1,9 @@
+# Walli's project
+
 from tkinter import *
 from datetime import datetime
 import math
 
-# Walli's project
 
 root = Tk()
 root.title('Mafia Host')
