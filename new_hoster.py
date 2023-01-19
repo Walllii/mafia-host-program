@@ -6,8 +6,8 @@ import math
 
 root = Tk()
 root.title('Mafia Host')
+root.iconphoto(True, PhotoImage(file='/Users/a111/Desktop/hoster/image.png'))
 root.resizable(width=False, height=False)
-root.iconphoto(True, PhotoImage(file='/Users/a111/Desktop/hoster/mafia_hoster_logo.png'))
 root.configure(bg='#1f3f3f')
 
 temp = 0
@@ -87,14 +87,14 @@ btn4 = Button(root,
 
 btn1.grid(row=1, columnspan=2, sticky='ew')
 
-
+player_counters = ['red' for i in range(10)]
 class Players_Button:
 
     def __init__(self, x):
         self.x = Button(root, text=f'{x}',
                         font=('Impact Light', 50, 'bold'),
                         border=3,
-                        foreground='red',
+                        foreground=player_counters[x-1],
                         command=self.button_kill
                         )
 
@@ -118,16 +118,16 @@ player_buttons = [Players_Button(i + 1) for i in range(10)]
 
 # ===============================================
 
-counter = 0
+counter = [0 for i in range(10)]
 
-class Label_foll:
+class Label_foll():
 
     def __init__(self, y):
 
         self = Label(
             root,
             font=('Impact Light', 23,),
-            text=f'{counter}',
+            text=f'{counter[y-1]}',
             width=1,
             height=1,
             anchor=CENTER,
@@ -135,26 +135,29 @@ class Label_foll:
             fg='white'
         )
 
-        self.configure()
-
         if y <= 5:
-            self.grid(
-                row=2, column=y - 1, sticky='ne', pady=8, padx=8
-            )
-        elif y > 5:
-            self.grid(
-                row=3, column=y - 6, sticky='ne', pady=8, padx=8
-            )
+            self.grid(row=2, column=y - 1, sticky='ne', pady=8, padx=8)
+        else:
+            self.grid(row=3, column=y - 6, sticky='ne', pady=8, padx=8)
 
 
 labels_folls = [Label_foll(i + 1) for i in range(10)]
+
+
+def edit_foll(y, sign):
+    global counter
+    if sign == '+' and -1 < counter[y-1] < 4:
+        counter[y-1] += 1
+    elif sign == '-' and 0 < counter[y-1] < 5:
+        counter[y-1] -= 1
+    labels_folls[y-1] = Label_foll(y)
 
 
 class Buttons_foll:
 
     def __init__(self, y, sign):
         self.sign = sign
-        self.y = Button(root, text=f"{y} {sign}", width=1, foreground='blue')
+        self.y = Button(root, text=f"{y} {sign}", width=1, foreground='blue', command=lambda: edit_foll(y, sign))
         if self.sign == '+':
             if y % 2 == 1:
                 self.y.grid(row=4, column=(y // 2), ipadx=3, sticky='w')
@@ -179,8 +182,37 @@ def delete_text():
 
 
 def new_game():
+    global counter, player_counters
+    player_counters = ['red' for i in range(10)]
+    counter = [0 for i in range(10)]
     enter_roles.delete(0, 'end')
     enter.delete(0, 'end')
+    player_buttons = [Players_Button(i + 1) for i in range(10)]
+    labels_folls = [Label_foll(i + 1) for i in range(10)]
+
+
+roles = str()
+
+
+def show():
+    global roles, player_counters
+    if enter_roles.get().isdigit() and len(enter_roles.get()) == 4:
+        roles = enter_roles.get()
+        print(type(roles))
+        enter.delete(0, 'end')
+        enter.insert(0, roles)
+    for i in range(10):
+        if i + 1 == int(roles[0]):
+            player_counters[i] = 'yellow'
+            player_buttons[i] = Players_Button(i + 1)
+        elif i + 1 == int(roles[1]):
+            player_counters[i] = 'purple'
+            player_buttons[i] = Players_Button(i + 1)
+        elif i + 1 == int(roles[2]) or i + 1 == int(roles[3]):
+            player_counters[i] = 'black'
+            player_buttons[i] = Players_Button(i + 1)
+        else:
+            player_buttons[i] = Players_Button(i + 1)
 
 
 enter = Entry(root, background='#1f3f3f', foreground='#00FF34', font=('DS-Digital', 18))
@@ -192,12 +224,12 @@ delete = Button(root,
                 command=delete_text
                 )
 
-enter_roles = Entry(root, width=9, background='#1f3f3f', foreground='orange', show='# ')
+enter_roles = Entry(root, width=9, background='#1f3f3f', foreground='orange', show=' ')
 
 show_roles = Button(root,
                     text='П П К',
                     font=('Impact Light', 15, 'bold'),
-                    # command=show
+                    command=show
                     )
 
 NEW = Button(root,
