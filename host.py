@@ -278,6 +278,7 @@ delete = Button(root,
                 command=delete_text
                 )
 
+
 enter_roles = Entry(root, width=2, font=('TNR', 10), background='#A19999', borderwidth=5, highlightbackground='red',
                     foreground='black', show='*')
 
