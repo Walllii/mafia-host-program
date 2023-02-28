@@ -43,7 +43,6 @@ def stop_sw():
     btn4.grid(row=1, column=1, sticky='ew')
     root.after_cancel(after_id)
 
-
 def continue_sw():
     btn3.grid_forget()
     btn4.grid_forget()
