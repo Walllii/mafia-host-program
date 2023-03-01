@@ -33,21 +33,21 @@ def tick():
 
 def start_sw():
     btn1.grid_forget()
-    btn2.grid(row=1, columnspan=2, sticky='ew')
+    btn2.grid(row=1, columnspan=2, sticky='ews')
     tick()
 
 
 def stop_sw():
     btn2.grid_forget()
-    btn3.grid(row=1, column=0, sticky='ew')
-    btn4.grid(row=1, column=1, sticky='ew')
+    btn3.grid(row=1, column=0, sticky='ews')
+    btn4.grid(row=1, column=1, sticky='ews')
     root.after_cancel(after_id)
 
 
 def continue_sw():
     btn3.grid_forget()
     btn4.grid_forget()
-    btn2.grid(row=1, columnspan=2, sticky='ew')
+    btn2.grid(row=1, columnspan=2, sticky='ews')
     label1.configure(bg='#040069', fg='white')
     tick()
 
@@ -58,19 +58,20 @@ def reset_sw():
     label1.configure(text='00', bg='#040069', fg='white')
     btn3.grid_forget()
     btn4.grid_forget()
-    btn1.grid(row=1, columnspan=2, sticky='ew')
+    btn1.grid(row=1, columnspan=2, sticky='ews')
 
 
-label1 = Label(root, width=6, font=('DS-Digital', 30), text='00',
+label1 = Label(root, width=7, font=('DS-Digital', 30), text='00',
                background='#040069', foreground='white')
 
-label1.grid(row=0, columnspan=2, sticky='ew')
+label1.grid(row=0, columnspan=2, sticky='news')
 
 btn1 = Button(root, text='S t a r t',
               font=('Impact Light', 10),
               border='4',
               bg='#A19999',
-              command=start_sw)
+              command=start_sw
+              )
 
 btn2 = Button(root,
               text='Stop',
@@ -93,7 +94,7 @@ btn4 = Button(root,
               bg='#A19999',
               command=reset_sw)
 
-btn1.grid(row=1, columnspan=2, sticky='ew')
+btn1.grid(row=1, columnspan=2, sticky='ews')
 
 root.option_add("*tearOff", FALSE)
 
@@ -106,13 +107,13 @@ def delete_fols():
     labels_folls = [Label_foll(i + 1) for i in range(10)]
 
 
-def ppk_enable():
-    if show_roles['state'] == 'disabled':
-        show_roles.configure(state='normal')
-        show_roles.configure(bg='#A19999')
-    else:
-        show_roles.configure(state='disabled')
-        show_roles.configure(bg='#7a7979')
+# def ppk_enable():
+#     if show_roles['state'] == 'disabled':
+#         show_roles.configure(state='normal')
+#         show_roles.configure(bg='#A19999')
+#     else:
+#         show_roles.configure(state='disabled')
+#         show_roles.configure(bg='#7a7979')
 
 
 main_menu = Menu()
@@ -121,8 +122,8 @@ file_menu.add_cascade(label='Delete_fols', command=delete_fols)
 main_menu.add_cascade(label="Option", menu=file_menu)
 
 timer_menu = Menu()
-timer_menu.add_checkbutton(label='Turn on', command=ppk_enable)
-main_menu.add_cascade(label="ППК", menu=timer_menu)
+# timer_menu.add_checkbutton(label='Turn on', command=ppk_enable)
+# main_menu.add_cascade(label="ППК", menu=timer_menu)
 
 root.config(menu=timer_menu)
 root.config(menu=file_menu)
@@ -227,69 +228,95 @@ folls_add = [Buttons_foll(i + 1, "+") for i in range(10)]
 folls_remove = [Buttons_foll(i + 1, "-") for i in range(10)]
 
 
+class ButtonsVote:
+
+    def __init__(self, numberOfPlayer):
+
+        self.numberOfPlayer = Button(root, text=(numberOfPlayer), border='4', width=1,
+                                     bg='#403E39', command=self.buttonColorOnVote)
+
+        if numberOfPlayer < 6:
+            if numberOfPlayer in (1, 3, 5):
+                self.numberOfPlayer.grid(row=0, ipadx=20, sticky='wsn', column=(numberOfPlayer // 2 + 2))
+            elif numberOfPlayer in (2, 4):
+                self.numberOfPlayer.grid(row=0, ipadx=20, sticky='nse', column=(numberOfPlayer // 2 + 1))
+
+        if numberOfPlayer >= 6:
+            if numberOfPlayer in (6, 8, 10):
+                self.numberOfPlayer.grid(row=1, ipadx=20, ipady=8, sticky='wn', column=(numberOfPlayer // 2 - 1))
+            elif numberOfPlayer in (7, 9):
+                self.numberOfPlayer.grid(row=1, ipadx=20, ipady=8, sticky='ne', column=(numberOfPlayer // 2 - 1))
+
+    def buttonColorOnVote(self):
+        if self.numberOfPlayer['bg'] == '#403E39':
+            self.numberOfPlayer['bg'] = 'green'
+
+        elif self.numberOfPlayer['bg'] == 'green':
+            self.numberOfPlayer['bg'] = '#403E39'
+
+
+buttonForVote = [ButtonsVote(i+1) for i in range(10)]
+
+
 # ===============================================
 
-def delete_text():
-    enter.delete(0, 'end')
+def clearAllVotes():
+    buttonForVote = [ButtonsVote(i + 1) for i in range(10)]
 
 
 def new_game():
     global counter, player_counters
     player_counters = ['red' for i in range(10)]
     counter = [0 for i in range(10)]
-    enter_roles.delete(0, 'end')
-    enter.delete(0, 'end')
+    # enter_roles.delete(0, 'end')
     player_buttons = [Players_Button(i + 1) for i in range(10)]
     labels_folls = [Label_foll(i + 1) for i in range(10)]
+    clearAllVotes()
 
 
 roles = str()
 
 
-def show():
-    global roles, player_counters
-    if enter_roles.get().isdigit() and len(enter_roles.get()) == 4:
-        roles = enter_roles.get()
-        print(type(roles))
-        enter.delete(0, 'end')
-        enter.insert(0, roles)
-    for i in range(10):
-        if i + 1 == int(roles[0]):
-            player_counters[i] = 'yellow'
-            player_buttons[i] = Players_Button(i + 1)
-        elif i + 1 == int(roles[1]):
-            player_counters[i] = 'purple'
-            player_buttons[i] = Players_Button(i + 1)
-        elif i + 1 == int(roles[2]) or i + 1 == int(roles[3]):
-            player_counters[i] = 'black'
-            player_buttons[i] = Players_Button(i + 1)
-        else:
-            player_buttons[i] = Players_Button(i + 1)
+# def show():
+#     global roles, player_counters
+#     if enter_roles.get().isdigit() and len(enter_roles.get()) == 4:
+#         roles = enter_roles.get()
+#         print(type(roles))
+#     for i in range(10):
+#         if i + 1 == int(roles[0]):
+#             player_counters[i] = 'yellow'
+#             player_buttons[i] = Players_Button(i + 1)
+#         elif i + 1 == int(roles[1]):
+#             player_counters[i] = 'purple'
+#             player_buttons[i] = Players_Button(i + 1)
+#         elif i + 1 == int(roles[2]) or i + 1 == int(roles[3]):
+#             player_counters[i] = 'black'
+#             player_buttons[i] = Players_Button(i + 1)
+#         else:
+#             player_buttons[i] = Players_Button(i + 1)
 
 
-enter = Entry(root, width=8, background='#A19999', foreground='#305200', borderwidth=5, font=('DS-Digital', 20))
-enter.grid(row=0, column=2, columnspan=2, sticky='news')
 delete = Button(root,
                 text='Delete',
                 font=('Impact Light', 10),
                 anchor=CENTER,
                 border='4',
                 bg='#A19999',
-                command=delete_text
+                command=clearAllVotes
                 )
 
-enter_roles = Entry(root, width=2, font=('TNR', 10), background='#A19999', borderwidth=5, highlightbackground='red',
-                    foreground='black', show='*')
+# enter_roles = Entry(root, width=2, font=('TNR', 10), background='#A19999', borderwidth=5, highlightbackground='red',
+#                     foreground='black', show='*')
 
-show_roles = Button(root,
-                    text='П П К',
-                    font=('Impact Light', 10, 'bold'),
-                    border='4',
-                    bg='#7a7979',
-                    activebackground='red',
-                    state='disabled',
-                    command=show
-                    )
+# show_roles = Button(root,
+#                     text='П П К',
+#                     font=('Impact Light', 10, 'bold'),
+#                     border='4',
+#                     bg='#7a7979',
+#                     activebackground='red',
+#                     state='disabled',
+#                     command=show
+#                     )
 
 NEW = Button(root,
              text='N E W',
@@ -301,10 +328,10 @@ NEW = Button(root,
              command=new_game
              )
 
-delete.grid(row=1, column=2, sticky='we')
-enter_roles.grid(row=1, column=3, sticky='news')
-show_roles.grid(row=1, column=4, sticky='news')
-NEW.grid(row=0, column=4, sticky='news')
+delete.grid(row=1, column=4, sticky='esn', ipadx=3)
+# enter_roles.grid(row=1, column=3, sticky='news')
+# show_roles.grid(row=1, column=4, sticky='news')
+NEW.grid(row=0, column=4, sticky='nes', ipadx=2)
 
 
 root.mainloop()
